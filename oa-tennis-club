@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OddOddAddAdd Tennis Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f2;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.08);
+    --text: #1a1a1a;
+    --muted: #888;
+    --hint: #bbb;
+    --green: #1D9E75;
+    --green-bg: #E1F5EE;
+    --purple: #534AB7;
+    --purple-bg: #EEEDFE;
+    --pink: #993556;
+    --pink-bg: #FBEAF0;
+    --amber: #854F0B;
+    --amber-bg: #FAEEDA;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --gray: #5F5E5A;
+    --gray-bg: #F1EFE8;
+  }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .app { max-width: 430px; margin: 0 auto; padding: 0 0 2rem; }
+
+  /* Header */
+  .header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1rem 1rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-logo { font-size: 28px; line-height: 1; }
+  .header-name { font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: 0.06em; margin-top: 4px; }
+  .header-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* Member picker */
+  .picker-wrap { padding: 1rem 1rem 0; }
+  .picker-wrap select {
+    width: 100%;
+    padding: 10px 14px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--text);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0.75rem 1rem 0;
+  }
+  .tab {
+    flex: 1;
+    padding: 8px 4px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--text);
+    color: #fff;
+    border-color: var(--text);
+  }
+
+  /* Section */
+  .section { padding: 0.75rem 1rem 0; }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Profile top */
+  .profile-top { display: flex; align-items: center; gap: 14px; }
+  .avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .profile-name { font-size: 18px; font-weight: 600; }
+  .profile-since { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .rank-pill {
+    display: inline-block;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  /* OA big number */
+  .oa-block { text-align: center; padding: 1rem 0 0.5rem; border-top: 1px solid var(--border); margin-top: 1rem; }
+  .oa-num { font-size: 52px; font-weight: 600; line-height: 1; letter-spacing: -2px; }
+  .oa-unit { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  .oa-date { font-size: 11px; color: var(--hint); margin-top: 2px; }
+
+  /* Stats grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-box { background: var(--bg); border-radius: 12px; padding: 0.75rem; text-align: center; }
+  .stat-n { font-size: 22px; font-weight: 600; }
+  .stat-l { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* Streak */
+  .streak-row { display: flex; align-items: center; gap: 12px; }
+  .streak-emoji { font-size: 32px; }
+  .streak-big { font-size: 20px; font-weight: 600; }
+  .streak-desc { font-size: 12px; color: var(--muted); }
+
+  /* Progress */
+  .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .progress-track { height: 8px; background: var(--bg); border-radius: 8px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 8px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+  .progress-note { font-size: 11px; color: var(--hint); margin-top: 5px; text-align: right; }
+
+  /* Badges */
+  .badge-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge-item { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 58px; }
+  .badge-icon { font-size: 26px; }
+  .badge-name { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.2; }
+  .badge-locked { opacity: 0.2; }
+
+  /* Next session */
+  .next-row { display: flex; justify-content: space-between; align-items: center; }
+  .next-day { font-size: 15px; font-weight: 600; }
+  .next-info { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .next-tag { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; background: var(--green-bg); color: var(--green); }
+
+  /* Section label */
+  .sec-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+
+  /* Activity */
+  .act-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .act-row:last-child { border-bottom: none; }
+  .act-date { color: var(--muted); width: 70px; flex-shrink: 0; }
+  .act-type { flex: 1; color: var(--text); }
+  .act-oa { font-weight: 600; }
+  .act-pos { color: var(--green); }
+  .act-neg { color: #D85A30; }
+
+  /* Leaderboard */
+  .lb-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-me { background: var(--bg); border-radius: 10px; padding: 9px 8px; margin: 2px -8px; }
+  .lb-rank { width: 22px; font-size: 16px; text-align: center; flex-shrink: 0; }
+  .lb-av { width: 30px; height: 30px; border-radius: 50%; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .lb-name-wrap { flex: 1; min-width: 0; }
+  .lb-name { font-size: 13px; font-weight: 500; }
+  .lb-bar { height: 3px; border-radius: 3px; margin-top: 4px; opacity: 0.4; }
+  .lb-oa-val { font-size: 13px; font-weight: 600; }
+  .lb-oa-unit { font-size: 10px; color: var(--muted); margin-left: 1px; }
+
+  /* View toggling */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* Loading / error */
+  .loading { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 14px; }
+  .loading-spinner { font-size: 32px; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-box { background: #fff0f0; border: 1px solid #ffd0d0; border-radius: 12px; padding: 1rem 1.25rem; color: #a33; font-size: 13px; line-height: 1.6; margin: 1rem; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-logo">🎾</div>
+    <div class="header-name">OddOddAddAdd Tennis Club</div>
+    <div class="header-sub">อังคาร · ศุกร์ &nbsp;|&nbsp; Play · Score · Shine</div>
+  </div>
+
+  <div id="loadingState" class="loading">
+    <div class="loading-spinner">🎾</div>
+    <div>กำลังโหลดข้อมูล...</div>
+  </div>
+
+  <div id="mainContent" style="display:none">
+    <div class="picker-wrap">
+      <select id="memberSelect" onchange="loadMember(this.value)"></select>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('profile',this)">โปรไฟล์</button>
+      <button class="tab" onclick="switchTab('activity',this)">ประวัติ</button>
+      <button class="tab" onclick="switchTab('rank',this)">อันดับ</button>
+    </div>
+
+    <div id="view-profile" class="view active">
+      <div class="section">
+        <div class="card">
+          <div class="profile-top">
+            <div class="avatar" id="pAvatar"></div>
+            <div>
+              <div class="profile-name" id="pName"></div>
+              <div class="profile-since" id="pSince"></div>
+              <div class="rank-pill" id="pRank"></div>
+            </div>
+          </div>
+          <div class="oa-block">
+            <div class="oa-num" id="pOA"></div>
+            <div class="oa-unit">OA สะสม</div>
+            <div class="oa-date" id="pDate"></div>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom:0.75rem">
+          <div class="stat-box"><div class="stat-n" id="sSessions"></div><div class="stat-l">ครั้งที่มา</div></div>
+          <div class="stat-box"><div class="stat-n" id="sSets"></div><div class="stat-l">เซ็ตที่เล่น</div></div>
+          <div class="stat-box"><div class="stat-n" id="sEvents"></div><div class="stat-l">ชนก๊วน</div></div>
+        </div>
+
+        <div class="card">
+          <div class="streak-row">
+            <div class="streak-emoji" id="streakEmoji"></div>
+            <div>
+              <div class="streak-big" id="streakNum"></div>
+              <div class="streak-desc" id="streakDesc"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-label">ถึง Rank ต่อไป</div>
+          <div class="progress-header">
+            <span id="progFrom"></span>
+            <span id="progTo"></span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progFill"></div>
+          </div>
+          <div class="progress-note" id="progNote"></div>
+        </div>
+
+        <div class="card">
+          <div class="sec-label">Achievements</div>
+          <div class="badge-grid" id="badgeGrid"></div>
+        </div>
+
+        <div class="sec-label" style="padding:0 0 8px">เซสชันถัดไป</div>
+        <div class="card">
+          <div class="next-row">
+            <div>
+              <div class="next-day" id="nextDay"></div>
+              <div class="next-info" id="nextInfo"></div>
+            </div>
+            <div class="next-tag">จองแล้ว ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-activity" class="view">
+      <div class="section">
+        <div class="card">
+          <div class="sec-label">ประวัติล่าสุด</div>
+          <div id="actList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-rank" class="view">
+      <div class="section">
+        <div class="card">
+          <div class="sec-label">อันดับ OA สะสม</div>
+          <div id="lbList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="errorState" style="display:none"></div>
+</div>
+
+<script>
+// ===== CONFIG — แก้ตรงนี้อย่างเดียว =====
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9s7J-K878PjJsFs2Fb1Hwpx-_y8dXSw04o9cszgSKbUVYd5Dsk9TYBtNsf5eRFAxY-9MYysSUBc55/pub?gid=0&single=true&output=csv";
+// =========================================
+
+const AVATAR_COLORS = [
+  { bg: "#EEEDFE", fg: "#534AB7" },
+  { bg: "#E1F5EE", fg: "#0F6E56" },
+  { bg: "#FBEAF0", fg: "#993556" },
+  { bg: "#FAEEDA", fg: "#854F0B" },
+  { bg: "#E6F1FB", fg: "#185FA5" },
+  { bg: "#FAECE7", fg: "#993C1D" },
+  { bg: "#EAF3DE", fg: "#3B6D11" },
+  { bg: "#F1EFE8", fg: "#5F5E5A" },
+];
+
+const RANKS = [
+  { name: "มือใหม่ 🌱", min: 0, max: 99, bg: "#F1EFE8", fg: "#5F5E5A" },
+  { name: "นักตี 🎾", min: 100, max: 199, bg: "#E6F1FB", fg: "#185FA5" },
+  { name: "Pro Member ⭐", min: 200, max: 299, bg: "#E1F5EE", fg: "#0F6E56" },
+  { name: "Club Star 🏆", min: 300, max: 499, bg: "#FBEAF0", fg: "#993556" },
+  { name: "Legend 👑", min: 500, max: 99999, bg: "#EEEDFE", fg: "#534AB7" },
+];
+
+const BADGES = [
+  { icon: "🎾", name: "ครั้งแรก", ok: m => m.sessions >= 1 },
+  { icon: "🔟", name: "10 ครั้ง", ok: m => m.sessions >= 10 },
+  { icon: "🌟", name: "25 ครั้ง", ok: m => m.sessions >= 25 },
+  { icon: "💫", name: "50 ครั้ง", ok: m => m.sessions >= 50 },
+  { icon: "🔥", name: "Streak 5", ok: m => m.streak >= 5 },
+  { icon: "⚡", name: "Streak 9", ok: m => m.streak >= 9 },
+  { icon: "🏅", name: "ชนก๊วน", ok: m => m.events >= 1 },
+  { icon: "🌈", name: "5 ชนก๊วน", ok: m => m.events >= 5 },
+];
+
+let allMembers = [];
+let currentIdx = 0;
+
+function getRank(oa) { return RANKS.find(r => oa >= r.min && oa <= r.max) || RANKS[0]; }
+function getNextRank(oa) {
+  const i = RANKS.findIndex(r => oa >= r.min && oa <= r.max);
+  return i < RANKS.length - 1 ? RANKS[i + 1] : null;
+}
+
+// Parse CSV from Google Sheets
+function parseCSV(text) {
+  const lines = text.trim().split("\n").map(l => l.split(",").map(c => c.trim().replace(/^"|"$/g, "")));
+  const headers = lines[0].map(h => h.toLowerCase().trim());
+  return lines.slice(1).filter(l => l.length > 1 && l[0]).map((cols, idx) => {
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = cols[i] || "");
+
+    // Parse activity history from columns act1_date, act1_type, act1_oa, act2_date, ...
+    const activities = [];
+    for (let n = 1; n <= 10; n++) {
+      const d = obj[`act${n}_date`], t = obj[`act${n}_type`], o = obj[`act${n}_oa`];
+      if (d && t && o) activities.push({ date: d, type: t, oa: parseInt(o) });
+    }
+
+    return {
+      name: obj["name"] || `สมาชิก ${idx + 1}`,
+      since: obj["since"] || "",
+      oa: parseInt(obj["oa"]) || 0,
+      sessions: parseInt(obj["sessions"]) || 0,
+      sets: parseInt(obj["sets"]) || 0,
+      events: parseInt(obj["events"]) || 0,
+      streak: parseInt(obj["streak"]) || 0,
+      updated: obj["updated"] || "",
+      activities,
+      color: AVATAR_COLORS[idx % AVATAR_COLORS.length],
+      initials: obj["name"] ? obj["name"].slice(0, 3) : "?",
+    };
+  });
+}
+
+async function fetchData() {
+  try {
+    const res = await fetch(SHEET_CSV_URL);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    allMembers = parseCSV(text);
+    if (!allMembers.length) throw new Error("ไม่พบข้อมูลสมาชิก");
+    buildSelect();
+    loadMember(0);
+    document.getElementById("loadingState").style.display = "none";
+    document.getElementById("mainContent").style.display = "block";
+  } catch (e) {
+    document.getElementById("loadingState").style.display = "none";
+    const errEl = document.getElementById("errorState");
+    errEl.style.display = "block";
+    errEl.innerHTML = `<div class="error-box">⚠️ โหลดข้อมูลไม่สำเร็จ<br><br>${e.message}<br><br>กรุณาตรวจสอบว่า Google Sheet ถูก publish แล้ว และ URL ใน config ถูกต้อง</div>`;
+  }
+}
+
+function buildSelect() {
+  const sel = document.getElementById("memberSelect");
+  sel.innerHTML = allMembers.map((m, i) => `<option value="${i}">👤 ${m.name}</option>`).join("");
+}
+
+function loadMember(idx) {
+  currentIdx = parseInt(idx);
+  const m = allMembers[currentIdx];
+  if (!m) return;
+
+  const rank = getRank(m.oa);
+  const nextRank = getNextRank(m.oa);
+
+  // Profile
+  const av = document.getElementById("pAvatar");
+  av.textContent = m.initials;
+  av.style.background = m.color.bg;
+  av.style.color = m.color.fg;
+
+  document.getElementById("pName").textContent = m.name;
+  document.getElementById("pSince").textContent = m.since;
+
+  const rp = document.getElementById("pRank");
+  rp.textContent = rank.name;
+  rp.style.background = rank.bg;
+  rp.style.color = rank.fg;
+
+  document.getElementById("pOA").textContent = m.oa.toLocaleString();
+  document.getElementById("pDate").textContent = m.updated ? "อัปเดต: " + m.updated : "";
+
+  // Stats
+  document.getElementById("sSessions").textContent = m.sessions;
+  document.getElementById("sSets").textContent = m.sets;
+  document.getElementById("sEvents").textContent = m.events;
+
+  // Streak
+  const emojis = ["🌱","🔥","🔥","🔥","🔥","🔥","⚡","⚡","⚡","⚡"];
+  document.getElementById("streakEmoji").textContent = emojis[Math.min(m.streak, 9)];
+  document.getElementById("streakNum").textContent = `${m.streak} ครั้งติดต่อกัน`;
+  document.getElementById("streakDesc").textContent = m.streak >= 5 ? "เยี่ยมมาก! อย่าหยุด 💪" : "มาต่อเนื่องกันนะ!";
+
+  // Progress
+  if (nextRank) {
+    const pct = Math.round(((m.oa - rank.min) / (rank.max - rank.min + 1)) * 100);
+    const need = nextRank.min - m.oa;
+    document.getElementById("progFrom").textContent = rank.name;
+    document.getElementById("progTo").textContent = nextRank.name;
+    document.getElementById("progFill").style.width = pct + "%";
+    document.getElementById("progFill").style.background = rank.fg;
+    document.getElementById("progNote").textContent = `อีก ${need} OA ถึง ${nextRank.name}`;
+  } else {
+    document.getElementById("progFrom").textContent = "Legend ผู้ยิ่งใหญ่ 👑";
+    document.getElementById("progTo").textContent = "";
+    document.getElementById("progFill").style.width = "100%";
+    document.getElementById("progFill").style.background = "#534AB7";
+    document.getElementById("progNote").textContent = "ถึงระดับสูงสุดแล้ว!";
+  }
+
+  // Badges
+  const bg = document.getElementById("badgeGrid");
+  bg.innerHTML = BADGES.map(b => {
+    const ok = b.ok(m);
+    return `<div class="badge-item${ok ? "" : " badge-locked"}"><div class="badge-icon">${b.icon}</div><div class="badge-name">${b.name}</div></div>`;
+  }).join("");
+
+  // Next session
+  const today = new Date();
+  const day = today.getDay();
+  const days = ["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"];
+  let nextText = day <= 2 ? "🎾 อังคารนี้" : day <= 5 ? "🎾 ศุกร์นี้" : "🎾 อังคารหน้า";
+  document.getElementById("nextDay").textContent = nextText;
+  document.getElementById("nextInfo").textContent = "เวลาและสนามตามที่แจ้งในไลน์";
+
+  // Activity
+  const al = document.getElementById("actList");
+  if (m.activities.length) {
+    al.innerHTML = m.activities.map(a => {
+      const sign = a.oa >= 0 ? "+" : "";
+      const cls = a.oa >= 0 ? "act-pos" : "act-neg";
+      return `<div class="act-row"><span class="act-date">${a.date}</span><span class="act-type">${a.type}</span><span class="act-oa ${cls}">${sign}${a.oa} OA</span></div>`;
+    }).join("");
+  } else {
+    al.innerHTML = `<div style="color:var(--muted);font-size:13px;padding:8px 0">ยังไม่มีประวัติ</div>`;
+  }
+
+  renderLeaderboard();
+}
+
+function renderLeaderboard() {
+  const sorted = [...allMembers].sort((a, b) => b.oa - a.oa);
+  const maxOa = sorted[0].oa;
+  const rankEmojis = ["🥇","🥈","🥉","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"];
+  const lbList = document.getElementById("lbList");
+  lbList.innerHTML = sorted.map((m, i) => {
+    const isMe = allMembers.indexOf(m) === currentIdx;
+    const pct = Math.round((m.oa / maxOa) * 100);
+    const r = getRank(m.oa);
+    return `
+      <div class="lb-row${isMe ? " lb-me" : ""}">
+        <div class="lb-rank">${rankEmojis[i] || (i+1)}</div>
+        <div class="lb-av" style="background:${m.color.bg};color:${m.color.fg}">${m.initials}</div>
+        <div class="lb-name-wrap">
+          <div class="lb-name">${m.name}${isMe ? ' <span style="font-size:10px;color:var(--muted)">(คุณ)</span>' : ''}</div>
+          <div class="lb-bar" style="width:${pct}%;background:${r.fg}"></div>
+        </div>
+        <div><span class="lb-oa-val">${m.oa.toLocaleString()}</span><span class="lb-oa-unit">OA</span></div>
+      </div>`;
+  }).join("");
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("view-" + tab).classList.add("active");
+}
+
+fetchData();
+</script>
+</body>
+</html>
